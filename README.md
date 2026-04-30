@@ -4,6 +4,12 @@
 
 ---
 
+## 🌍 Мови / Languages / Langues
+
+🇺🇦 **[Українська](README.md)** | 🇬🇧 **[English](docs/README.en.md)** | 🇫🇷 **[Français](docs/README.fr.md)**
+
+---
+
 ## 🚀 Опис
 
 **Demon System** — це мобільний додаток для Android, реалізований на **Python** з використанням фреймворку **Kivy** та компонентів **KivyMD**.
@@ -47,6 +53,9 @@ Demon-System/
 │   ├── pop_ai.py        # Чат з AI демоном
 │   └── pop_gem.py       # Чат з Gem демоном
 ├── assets/              # Ресурси (іконки, зображення)
+├── docs/
+│   ├── README.en.md     # English documentation
+│   └── README.fr.md     # Documentation en français
 └── README.md            # Цей файл
 ```
 
