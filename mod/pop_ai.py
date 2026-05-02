@@ -11,13 +11,12 @@ KV = '''
     MDBoxLayout:
         orientation: "vertical"
 
-        # Верхня панель
         MDTopAppBar:
-            title: "AI Demon"
+            title: "Gem Demon"
             elevation: 4
             left_action_items: [["arrow-left", lambda x: root.go_back()]]
+            right_action_items: [["cog", lambda x: app.switch_screen("settings")]]
 
-        # Чат
         ScrollView:
             id: scroll
 
@@ -29,7 +28,7 @@ KV = '''
                 padding: dp(20)
                 spacing: dp(10)
 
-        # Панель вводу
+       # Панель вводу
         MDBoxLayout:
             size_hint_y: None
             height: self.minimum_height
@@ -39,45 +38,35 @@ KV = '''
             MDBoxLayout:
                 size_hint_y: None
                 height: input_text.height
-                radius: [8, 8, 8, 8]
+                radius: [8]
                 padding: [dp(2), dp(20), dp(2), dp(15)]
 
                 FloatLayout:
 
-                    # Поле вводу (зменшена ширина)
                     MDTextField:
                         id: input_text
                         hint_text: "Запитай..."
                         multiline: True
                         max_height: dp(200)
-
                         size_hint_y: None
                         height: max(self.minimum_height, dp(40))
-
                         size_hint_x: 0.85
                         pos_hint: {"x": 0, "center_y": 0.6}
-
                         text_size: self.width, None
-
-                        # прямокутний стиль з тонким бордером
                         mode: "rectangle"
                         line_color_normal: 0.5, 0.5, 0.5, 1
                         line_color_focus: app.theme_cls.primary_color
-
                         on_text:
                             self.height = min(self.minimum_height, self.max_height)
 
-                    # Кнопка надіслати
                     MDIconButton:
-                        icon: "send"
+                        icon: "send"   # інша іконка
                         theme_icon_color: "Custom"
                         icon_color: 1, 1, 1, 1
                         md_bg_color: app.theme_cls.primary_color
-
                         size_hint: None, None
                         size: dp(36), dp(36)
                         pos_hint: {"right": 1, "center_y": 0.4}
-
                         on_release: root.send_message()
 '''
 

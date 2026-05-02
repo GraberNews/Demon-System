@@ -16,6 +16,7 @@ KV = '''
             title: "Gem Demon"
             elevation: 4
             left_action_items: [["arrow-left", lambda x: root.go_back()]]
+            right_action_items: [["cog", lambda x: app.switch_screen("settings")]]
 
         ScrollView:
             id: scroll
