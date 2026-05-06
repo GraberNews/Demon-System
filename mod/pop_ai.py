@@ -1,8 +1,19 @@
+# mod/pop_ai.py
+
 from kivy.lang import Builder
 from kivy.metrics import dp
 from kivy.clock import Clock
 from kivymd.uix.screen import MDScreen
+from kivymd.app import MDApp
+from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.label import MDLabel
+
+from tools.mod_bottom_menu import BottomMenu
+
+# ====== 🔥 START IMPORT (NEW MENU SYSTEM)
+from tools.menu_config import get_menu_items
+# ====== 🔥 END IMPORT
+
 
 KV = '''
 <PopAIScreen>:
@@ -11,12 +22,15 @@ KV = '''
     MDBoxLayout:
         orientation: "vertical"
 
+        # ===== TOP BAR
         MDTopAppBar:
-            title: "Gem Demon"
+            id: top_bar
+            title: app.lang.get("ai_title")
             elevation: 4
             left_action_items: [["arrow-left", lambda x: root.go_back()]]
             right_action_items: [["cog", lambda x: app.switch_screen("settings")]]
 
+        # ===== Chat Area
         ScrollView:
             id: scroll
 
@@ -25,86 +39,276 @@ KV = '''
                 orientation: "vertical"
                 size_hint_y: None
                 height: self.minimum_height
-                padding: dp(20)
-                spacing: dp(10)
+                padding: dp(10)
+                spacing: dp(8)
 
-       # Панель вводу
+        # ===== Блок вводу
         MDBoxLayout:
             size_hint_y: None
             height: self.minimum_height
-            padding: [dp(5), dp(5), dp(5), dp(20)]
+            padding: [dp(0), dp(0), dp(0), dp(20)]
 
-            # контейнер поля
             MDBoxLayout:
                 size_hint_y: None
                 height: input_text.height
-                radius: [8]
-                padding: [dp(2), dp(20), dp(2), dp(15)]
+                padding: [dp(0), dp(0), dp(0), dp(0)]
 
                 FloatLayout:
-
-                    MDTextField:
-                        id: input_text
-                        hint_text: "Запитай..."
-                        multiline: True
-                        max_height: dp(200)
+                    
+                    BoxLayout:
                         size_hint_y: None
-                        height: max(self.minimum_height, dp(40))
-                        size_hint_x: 0.85
-                        pos_hint: {"x": 0, "center_y": 0.6}
-                        text_size: self.width, None
-                        mode: "rectangle"
-                        line_color_normal: 0.5, 0.5, 0.5, 1
-                        line_color_focus: app.theme_cls.primary_color
-                        on_text:
-                            self.height = min(self.minimum_height, self.max_height)
-
-                    MDIconButton:
-                        icon: "send"   # інша іконка
-                        theme_icon_color: "Custom"
-                        icon_color: 1, 1, 1, 1
-                        md_bg_color: app.theme_cls.primary_color
-                        size_hint: None, None
-                        size: dp(36), dp(36)
-                        pos_hint: {"right": 1, "center_y": 0.4}
-                        on_release: root.send_message()
+                        height: dp(70)
+                        orientation: "horizontal"
+                        spacing: dp(10)
+                        padding: [dp(10), dp(5), dp(10), dp(20)]
+                
+                        # КНОПКА "+"
+                        MDIconButton:
+                            icon: "plus"
+                            md_bg_color: app.theme_cls.primary_color
+                            theme_icon_color: "Custom"
+                            icon_color: 1,1,1,1
+                            icon_size: "16sp"
+                            size_hint: None, None
+                            on_release: root.open_bottom_menu()
+                
+                        # Поле вводу
+                        MDTextField:
+                            id: input_text
+                            multiline: True
+                            max_height: dp(200)
+                            size_hint_y: None
+                            height: max(self.minimum_height, dp(30))
+                            size_hint_x: 0.85
+                            text_size: self.width, None
+                            mode: "rectangle"
+                            on_text:
+                                self.height = min(self.minimum_height, self.max_height)
+                
+                        # КНОПКА "Відправити"
+                        MDIconButton:
+                            icon: "send-variant-outline"
+                            md_bg_color: app.theme_cls.primary_color
+                            theme_icon_color: "Custom"
+                            icon_color: 1,1,1,1
+                            icon_size: "16sp"
+                            size_hint: None, None
+                            on_release: root.send_message()
 '''
 
 Builder.load_string(KV)
 
+
 class PopAIScreen(MDScreen):
 
+    # ====== 🔥 START open_bottom_menu (NEW MENU SYSTEM)
+    def open_bottom_menu(self):
+        if not hasattr(self, "bottom_menu"):
+
+            # отримуємо меню для AI
+            items = get_menu_items("ai")
+
+            self.bottom_menu = BottomMenu(
+                items=items,
+                on_select=self.handle_menu
+            )
+
+        self.bottom_menu.open()
+    # ====== 🔥 END open_bottom_menu
+
+
+    # ====== 🔥 START handle_menu (KEY-BASED LOGIC)
+    def handle_menu(self, action):
+        print("Menu action:", action)
+        app = MDApp.get_running_app()
+
+        if action == "answers":
+            app.switch_screen("answers")
+
+        elif action == "ai":
+            app.switch_screen("ai")
+
+        elif action == "gem":
+            app.switch_screen("gem")
+
+        elif action == "test":
+            app.switch_screen("test")
+
+        elif action == "files":
+            print("AI files")
+
+        elif action == "db":
+            print("AI DB")
+    # ====== 🔥 END handle_menu
+
+
+    # ===== Send Message
     def send_message(self):
         text = self.ids.input_text.text.strip()
         if not text:
             return
 
-        self.add_message(text, "user")
+        self.add_user_message(text)
         self.ids.input_text.text = ""
 
-        # тестова відповідь
-        Clock.schedule_once(
-            lambda dt: self.add_message("Я демон, але вже думаю", "bot"),
-            0.3
-        )
+        self.typing_widget = self.add_bot_typing()
+        Clock.schedule_once(self.fake_response, 2)
 
-    def add_message(self, text, sender):
-        align = "right" if sender == "user" else "left"
 
-        msg = MDLabel(
-            text=text,
+    def fake_response(self, dt):
+        text = "Це тестова відповідь бота. Тут буде API."
+
+        if self.typing_widget:
+            self.ids.chat_box.remove_widget(self.typing_widget)
+
+        self.add_bot_message(text)
+
+
+    # ===== USER MESSAGE
+    def add_user_message(self, text):
+        app = MDApp.get_running_app()
+
+        c = app.theme_cls.primary_color
+        bg = (c[0], c[1], c[2], 0.3)
+
+        text_color = (0, 0, 0, 1) if app.theme_cls.theme_style == "Light" else (1, 1, 1, 1)
+
+        row = MDBoxLayout(
+            orientation="horizontal",
             size_hint_y=None,
-            halign=align,
-            theme_text_color="Primary"
+            adaptive_height=True,
+            padding=[dp(5), dp(4)],
         )
 
-        msg.bind(texture_size=msg.setter("size"))
-        self.ids.chat_box.add_widget(msg)
+        bubble = MDBoxLayout(
+            orientation="vertical",
+            padding=[dp(12), dp(8)],
+            size_hint=(None, None),
+            adaptive_height=True,
+            md_bg_color=bg,
+            radius=[22, 22, 6, 22],
+        )
+
+        label = MDLabel(
+            text=text,
+            theme_text_color="Custom",
+            text_color=text_color,
+            size_hint=(None, None),
+            adaptive_size=True,
+        )
+
+        def update_size(instance, value):
+            instance.width = min(value[0], dp(250))
+            instance.text_size = (instance.width, None)
+
+        label.bind(texture_size=update_size)
+
+        bubble.add_widget(label)
+
+        def update_bubble(instance, value):
+            bubble.width = label.width + dp(24)
+
+        label.bind(width=update_bubble)
+
+        row.add_widget(MDBoxLayout())
+        row.add_widget(bubble)
+
+        self.ids.chat_box.add_widget(row)
+        Clock.schedule_once(lambda dt: self.scroll_to_bottom(), 0.05)
+
+
+    # ===== BOT MESSAGE
+    def add_bot_message(self, text):
+        app = MDApp.get_running_app()
+
+        if app.theme_cls.theme_style == "Dark":
+            bg = (1, 1, 1, 0.05)
+            text_color = (1, 1, 1, 1)
+        else:
+            bg = (0, 0, 0, 0.05)
+            text_color = (0, 0, 0, 1)
+
+        bubble = MDBoxLayout(
+            orientation="vertical",
+            padding=[dp(14), dp(10)],
+            size_hint_y=None,
+            adaptive_height=True,
+            size_hint_x=1,
+            md_bg_color=bg,
+            radius=[22, 22, 22, 6],
+        )
+
+        label = MDLabel(
+            text=text,
+            theme_text_color="Custom",
+            text_color=text_color,
+            size_hint_y=None,
+            adaptive_height=True,
+            text_size=(self.width - dp(40), None),
+        )
+
+        bubble.add_widget(label)
+        self.ids.chat_box.add_widget(bubble)
 
         Clock.schedule_once(lambda dt: self.scroll_to_bottom(), 0.05)
+
+
+    # ===== TYPING
+    def add_bot_typing(self):
+        app = MDApp.get_running_app()
+
+        if app.theme_cls.theme_style == "Dark":
+            bg = (1, 1, 1, 0.05)
+            text_color = (1, 1, 1, 1)
+        else:
+            bg = (0, 0, 0, 0.05)
+            text_color = (0, 0, 0, 1)
+
+        bubble = MDBoxLayout(
+            orientation="vertical",
+            padding=[dp(14), dp(10)],
+            size_hint_y=None,
+            adaptive_height=True,
+            size_hint_x=1,
+            md_bg_color=bg,
+            radius=[22, 22, 22, 6],
+        )
+
+        label = MDLabel(
+            text="...",
+            theme_text_color="Custom",
+            text_color=text_color,
+            size_hint_y=None,
+            adaptive_height=True,
+        )
+
+        bubble.add_widget(label)
+        self.ids.chat_box.add_widget(bubble)
+
+        Clock.schedule_once(lambda dt: self.scroll_to_bottom(), 0.05)
+
+        return bubble
+
 
     def scroll_to_bottom(self):
         self.ids.scroll.scroll_y = 0
 
+
     def go_back(self):
-        self.manager.current = "home"
+        MDApp.get_running_app().go_back()
+
+
+    # ====== 🔥 START update_text (SYNC MENU LANGUAGE)
+    def update_text(self):
+        app = MDApp.get_running_app()
+
+        try:
+            self.ids.top_bar.title = app.lang.get("ai_title")
+
+            # синхронізація меню
+            if hasattr(self, "bottom_menu"):
+                self.bottom_menu.update_text()
+
+        except Exception as e:
+            print(f"[PopAIScreen] {e}")
+    # ====== 🔥 END update_text
