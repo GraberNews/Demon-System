@@ -1,5 +1,4 @@
 # tools/theme.py
-
 class ThemeManager:
     def __init__(self, app):
         self.app = app
@@ -8,7 +7,7 @@ class ThemeManager:
     def set_dark(self):
         self.app.theme_cls.theme_style = "Dark"
 
-        # палітра (твоя)
+        # палітра
         self.app.theme_cls.primary_palette = "Teal"
         self.app.theme_cls.primary_hue = "800"
         self.app.theme_cls.accent_palette = "Orange"
@@ -18,7 +17,6 @@ class ThemeManager:
     def set_light(self):
         self.app.theme_cls.theme_style = "Light"
 
-        # та сама палітра
         self.app.theme_cls.primary_palette = "Teal"
         self.app.theme_cls.primary_hue = "800"
         self.app.theme_cls.accent_palette = "Orange"
