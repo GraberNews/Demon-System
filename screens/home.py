@@ -1,11 +1,8 @@
-# home.py
+# screens/home.py
 from kivy.lang import Builder
 from kivy.utils import get_color_from_hex
 from kivymd.uix.screen import MDScreen
-
-from mod.pop_ai import PopAIScreen
-from mod.pop_gem import PopGemScreen
-
+from kivymd.app import MDApp
 
 KV = '''
 #:import get_color_from_hex kivy.utils.get_color_from_hex
@@ -18,14 +15,15 @@ KV = '''
         orientation: "vertical"
 
         MDTopAppBar:
-            title: "Demon System"
+            id: top_bar
+            title: app.lang.get("home_title")
             elevation: 4
             md_bg_color: app.theme_cls.primary_color
             left_action_items: [["menu", lambda x: app.open_drawer()]]
             right_action_items: [["dots-vertical", lambda x: root.menu_placeholder()]]
 
         MDLabel:
-            text: "Головний екран"
+            id: main_label
             halign: "center"
             valign: "middle"
             font_style: "H4"
@@ -36,22 +34,32 @@ KV = '''
 
         MDFloatingActionButton:
             icon: "robot"
-            md_bg_color: app.theme_cls.accent_color
-            pos_hint: {"center_x": 0.88, "center_y": 0.08}
+            icon_size: "90"
+            md_bg_color: get_color_from_hex("#ff9900")
+            pos_hint: {"center_x": 0.12, "center_y": 0.06}
             elevation: 10
             on_release: root.open_ai()
 
         MDFloatingActionButton:
             icon: "star-four-points"
-            md_bg_color: get_color_from_hex("#03A9F4")
-            pos_hint: {"center_x": 0.88, "center_y": 0.19}
+            #icon_color: "#abbfff"
+            icon_size: "150"
+            md_bg_color: get_color_from_hex("#6699ff")
+            pos_hint: {"center_x": 0.32, "center_y": 0.06}
             elevation: 10
             on_release: root.open_gem()
+            
+        MDFloatingActionButton:
+            icon: "ab-testing"
+            icon_color: "#6699ff"
+            icon_size: "120"
+            md_bg_color: get_color_from_hex("#424954")
+            pos_hint: {"center_x": 0.88, "center_y": 0.06}
+            elevation: 10
+            on_release: root.open_test()
 '''
-# -----------------------------------
 
 Builder.load_string(KV)
-
 
 class HomeScreen(MDScreen):
 
@@ -62,3 +70,19 @@ class HomeScreen(MDScreen):
     def open_gem(self):
         if self.manager:
             self.manager.current = "gem"
+
+    def open_test(self):
+        if self.manager:
+            self.manager.current = "test"
+
+    def menu_placeholder(self):
+        print("Menu placeholder - Home")
+
+    # АС оновлення текстів при зміні мови
+    def update_text(self):
+        app = MDApp.get_running_app()
+
+        try:
+            self.ids.top_bar.title = app.lang.get("home_title")
+        except Exception as e:
+            print(f"[HomeScreen] {e}")
