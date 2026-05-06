@@ -28,7 +28,7 @@ def get_test_menu():
         {"icon": "format-list-bulleted", "key": "bott_answers_menu", "action": "answers"},
         {"icon": "file", "key": "bott_testfiles_menu", "action": "files"},
         {"icon": "robot", "key": "bott_ai_menu", "action": "ai"},
-        {"icon": "test-tube", "key": "bott_test_menu", "action": "test"},
+        {"icon": "robot", "key": "bott_gem_menu", "action": "gem"},
         {"icon": "database", "key": "bott_test_db_menu", "action": "db"},
     ]
 
