@@ -14,7 +14,7 @@ source.dir = .
 source.include_exts = py,png,jpg,jpeg,kv,atlas,ini,ttf,mp3,wav
 
 # Файли та папки для включення
-source.include_patterns = main.py, app/, screens/, mod/, tools/, lang/, *.kv
+#source.include_patterns = main.py, app/, screens/, mod/, tools/, lang/, *.kv
 source.exclude_patterns = buildozer.spec, *.pyc, *.pyo, .git*, __pycache__/, .buildozer/, *.kv.bak, *.log, *.spec.backup
 
 # Екран
