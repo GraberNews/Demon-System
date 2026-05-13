@@ -37,6 +37,11 @@ jobs:
           yes | $HOME/android-sdk/cmdline-tools/cmdline-tools/bin/sdkmanager \
             "platform-tools" "platforms;android-33" "build-tools;37.0.0"
 
+      - name: Fix sdkmanager path
+        run: |
+          mkdir -p $HOME/android-sdk/tools/bin
+          ln -s $HOME/android-sdk/cmdline-tools/cmdline-tools/bin/sdkmanager $HOME/android-sdk/tools/bin/sdkmanager
+
       - name: Build APK with Buildozer
         run: |
           export ANDROIDSDK=$HOME/android-sdk
