@@ -33,13 +33,13 @@ jobs:
           cd $HOME/android-sdk
           wget https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip
           unzip commandlinetools-linux-10406996_latest.zip -d cmdline-tools
-          yes | $HOME/android-sdk/cmdline-tools/bin/sdkmanager --licenses
-          yes | $HOME/android-sdk/cmdline-tools/bin/sdkmanager "platform-tools" "platforms;android-33" "build-tools;37.0.0"
+          yes | $HOME/android-sdk/cmdline-tools/cmdline-tools/bin/sdkmanager --licenses
+          yes | $HOME/android-sdk/cmdline-tools/cmdline-tools/bin/sdkmanager "platform-tools" "platforms;android-33" "build-tools;37.0.0"
 
       - name: Build APK with Buildozer
         run: |
           export ANDROIDSDK=$HOME/android-sdk
-          export PATH=$ANDROIDSDK/cmdline-tools/bin:$ANDROIDSDK/platform-tools:$PATH
+          export PATH=$ANDROIDSDK/cmdline-tools/cmdline-tools/bin:$ANDROIDSDK/platform-tools:$PATH
           buildozer android debug
 
       - name: Upload APK artifact
