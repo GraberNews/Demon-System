@@ -30,7 +30,9 @@ android.minapi = 24
 android.ndk_api = 26
 android.enable_androidx = True
 android.archs = arm64-v8a                  # Залишили тільки 64-біт для стабільності
-
+# Використовуємо зовнішню SDK
+android.sdk_path = $HOME/android-sdk
+android.ndk_path = $HOME/android-sdk/ndk
 # Залежності
 requirements = python3,kivy==2.3.0,kivymd==1.2.0,pillow,sqlite3
 
