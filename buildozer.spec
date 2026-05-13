@@ -32,6 +32,8 @@ android.enable_androidx = True
 android.archs = arm64-v8a                  # Залишили тільки 64-біт для стабільності
 # Використовуємо зовнішню SDK
 
+source.exclude_patterns = tools/, buildozer.spec, *.pyc, *.pyo, .git*, __pycache__/, .buildozer/, *.kv.bak, *.log, *.spec.backup
+
 # Використовуємо зовнішню SDK з правильним шляхом до sdkmanager
 android.sdkmanager_path = $HOME/android-sdk/cmdline-tools/cmdline-tools/bin
 
