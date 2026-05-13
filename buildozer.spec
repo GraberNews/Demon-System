@@ -35,7 +35,7 @@ android.archs = arm64-v8a                  # Залишили тільки 64-б
 requirements = python3,kivy==2.3.0,kivymd==1.2.0,pillow,sqlite3
 
 # python-for-android
-p4a.branch = develop
+p4a.branch = master
 
 # Налаштування збірки
 log_level = 2
@@ -46,7 +46,7 @@ warn_on_root = True
 # ========================================
 
 # Для кращої сумісності
-buildozer = 1.5.0
+#buildozer = 1.5.0
 python.version = 3
 
 # Якщо будуть проблеми з великими залежностями
