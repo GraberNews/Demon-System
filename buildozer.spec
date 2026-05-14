@@ -30,6 +30,7 @@ android.minapi = 24
 android.ndk_api = 26
 android.enable_androidx = True
 android.archs = arm64-v8a                  # Залишили тільки 64-біт для стабільності
+android.build_tools_version = 33.0.2
 android.sdkmanager_path = $HOME/android-sdk/cmdline-tools/cmdline-tools/bin
 
 # Залежності
